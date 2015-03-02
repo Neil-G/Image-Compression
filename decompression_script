@@ -1,0 +1,14 @@
+function  I = my_block_uncompress( code, B,r,y)
+
+[m,n]=size(code);
+A=zeros(64, ceil(r/8)*ceil(y/8));
+
+for i=1:m
+    j=code(i,3);
+    k=code(i,2);
+    A(j,k)=code(i,1);
+end
+a=B*A;                             
+I=col2im(a,[8,8],[r,y],'distinct');
+imagesc(I);colormap(gray) 
+end
