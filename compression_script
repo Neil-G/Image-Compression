@@ -1,0 +1,45 @@
+function code = my_block_compress(I, B, nz)
+%from homework 7 
+a=im2col(I, [8,8], 'distinct');       
+C=B\a;  
+
+%create single column vector, each COLUMN of C end to end
+[m,n] = size(C)
+CA = reshape(C,m*n,1);
+
+%make all values positive so we can sort by absolute value
+%Sort CA in descending order, and create an index vector S to record original
+%location
+CA=abs(CA);
+[CA indexcol]=sort(CA, 'descend');
+
+%Create a new column vector CB from the indexcol of sorted CA. This will
+%replace the negative signs taken away from abs(CA)
+CB = reshape(C,m*n,1);
+CB= CB(indexcol(1:m*n));
+
+%% Repeat the same process as above, except with rows instead of columns
+
+%create single column vector, each ROW of C end to end
+D=C';
+DA = reshape(D,m*n,1);
+
+%make all values positive so we can sort by absolute value
+%Sort DA in descending order, and create an index vector indexrow to record original
+%location
+DA=abs(DA);
+[DA indexrow]=sort(DA, 'descend');
+
+%Create a new column vector CB from the index of sorted CA. This will
+%replace the negative signs taken away from abs(CA)
+DB = reshape(D,m*n,1);
+DB= DB(indexrow(1:m*n));
+
+%% Create a nz x 3 column vector, with largest magnitude entries and their original column and row position
+
+colnum=ceil(indexcol/64);
+rownum=ceil(indexrow/n);
+E= [CB colnum rownum];
+format shortG;
+code=E(1:nz,:)
+end
